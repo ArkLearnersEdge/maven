@@ -1,0 +1,24 @@
+node('master') 
+{
+    stage('Download') 
+	{
+		git 'https://github.com/ArkLearnersEdge/maven.git'
+	}
+	stage('Build')
+	{
+	    sh 'mvn package'
+	    
+	}
+	stage('Deploy')
+	{
+	    deploy adapters: [tomcat9(credentialsId: '938519d4-ff73-4d7b-8a43-1d928cc910ca', path: '', url: 'http://172.31.41.140:8080')], contextPath: 'testapp', war: '**/*.war'
+	}
+	stage('Testing')
+	{
+	   git 'https://github.com/ArkLearnersEdge/FunctionalTesting.git'
+	   sh 'java -jar /home/ubuntu/.jenkins/workspace/sp_test/testing.jar'
+	   
+	}
+	
+	
+}
